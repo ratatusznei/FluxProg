@@ -395,7 +395,7 @@ void FluxProg :: execute() {
                             break;
                         case 7:
                             //color sensor 2
-                            current_executing_block->setParameter1(color_sensor_reading[0]);
+                            current_executing_block->setParameter1(color_sensor_reading[1]);
                             current_executing_block->setParameter2(1);
                             break;
                         case 8:

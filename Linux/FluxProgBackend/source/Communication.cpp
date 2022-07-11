@@ -17,7 +17,7 @@ Communication::Communication()
     }
     ultrasonic_sensor_reading = shared_memory->construct<int>(MEMORY_ULTRASONIC_SENSOR)[N_ULTRASONIC]();
     black_type_sensor_reading = shared_memory->construct<int>(MEMORY_VISION_SENSOR)[N_BLACK_TAPE_SENSOR]();
-    //color_sensor_reading = shared_memory->construct<unsigned short int >(POSICAO_DETECTADA)[N_ULTRASONIC]();
+    color_sensor_reading = shared_memory->construct<int>(MEMORY_COLOR_SENSOR)[N_COLOR_SENSOR]();
     command = shared_memory->find<int>(MEMORY_COMMAND);
     virtual_robot = shared_memory->find<int>(MEMORY_ROBOT_TYPE);
     feedback = shared_memory->find<int>(MEMORY_FEEDBACK);
@@ -65,13 +65,13 @@ void Communication::setBlackTypeReading(int *black_type_reading)
     }
 }
 
-/*void Communication::setColorReading(int **color_reading)
+void Communication::setColorReading(int *color_reading)
 {
     for(int i=0; i < N_COLOR_SENSOR; i++)
     {
         color_sensor_reading[i] = color_reading[i];
     }
-}*/
+}
 
 int Communication::getAbstractionLevel()
 {

@@ -27,10 +27,10 @@ int *Robot::getBlackTypeReading()
     return black_type_sensor_reading;
 }
 
-//int **Robot::getColorReading()
-//{
-//    return color_sensor_reading;
-//}
+int *Robot::getColorReading()
+{
+    return color_sensor_reading;
+}
 
 void Robot::updateSensorsReading()
 {
@@ -43,13 +43,10 @@ void Robot::updateSensorsReading()
     {
         black_type_sensor_reading[i] = 0;
     }
-    /*for (i = 0; i < N_COLOR_SENSOR; i++)
+    for (i = 0; i < N_COLOR_SENSOR; i++)
     {
-        for (j = 0; j < COLOR_SENSOR_COMPONENTS; j++)
-        {
-            color_sensor_reading[i][j] = 0
-        }
-    }*/
+	color_sensor_reading[i] = 0;
+    }
 }
 
 void Robot::setAbstractionLevel(int abstraction)
