@@ -352,6 +352,7 @@ void FluxProg :: execute() {
                     communication->upadateReadings();
                     int* black_sensor_reading = communication->getBlackTypeReading();
                     int* ultrasonic_sensor_reading = communication->getUltrasonicReading();
+                    int* color_sensor_reading = communication->getColorReading();
                     int low_limit_ultrasonic = 19;
                     int high_limit_ultrasonic = 21;
                     //checa tipo de sensor
@@ -389,12 +390,12 @@ void FluxProg :: execute() {
                             break;
                         case 6:
                             //color sensor 1
-                            current_executing_block->setParameter1(1);
+                            current_executing_block->setParameter1(color_sensor_reading[0]);
                             current_executing_block->setParameter2(1);
                             break;
                         case 7:
                             //color sensor 2
-                            current_executing_block->setParameter1(0);
+                            current_executing_block->setParameter1(color_sensor_reading[0]);
                             current_executing_block->setParameter2(1);
                             break;
                         case 8:
