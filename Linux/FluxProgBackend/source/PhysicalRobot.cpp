@@ -42,43 +42,52 @@ void PhysicalRobot::updateSensorsReading()
 
 void PhysicalRobot::receiveData()
 {
-    //std::cout << "recebendo"<<std::endl;
-    unsigned char* reading = 0;
-    //reading[2] = 'A';
-    //std::cout <<"louco "<< reading<<std::endl;
-    //RS232_flushRX(CPORT_NR);
-    clock_t t = clock();
-    int i, there_is_packet = 0;
-    //while(there_is_packet != SIZEPACKET && ((float)(clock() - t))/CLOCKS_PER_SEC < 10.0)
-    //{
-        there_is_packet = RS232_PollComport(CPORT_NR, reading, SIZEPACKET);
-        #ifdef _WIN32
-            Sleep(5000);
-        #else
-            sleep(5);
-        #endif // _WIN32
+    int ndx = 0;
+    unsigned char rc;
+    char receivedChars[64];
+    int size = 1;
 
+    int max_rep = 5;
+    while (max_rep > 0) {
+        size = RS232_PollComport(CPORT_NR, &rc, 1);
+	std::cout << '.' << std::endl;
 
-        //std::cout << "recebendo"<<there_is_packet<<std::endl;
-    //}
-
-    std::cout << "tempo foi de "<<(float)(clock() - t)/CLOCKS_PER_SEC<<" e tam pak e "<<there_is_packet<<std::endl;
-    if (there_is_packet == SIZEPACKET)
-    {
-        for (i = 0; i < N_BLACK_TAPE_SENSOR; i++)
-        {
-            black_type_sensor_reading[i] = reading[i];
-            std::cout <<black_type_sensor_reading[i]<<" ";
-        }
-        for (i = 0; i < N_ULTRASONIC; i++)
-        {
-            ultrasonic_sensor_reading[i] = *(unsigned short int*)&reading[2*i + 5];
-            std::cout <<ultrasonic_sensor_reading[i]<<" ";
-        }
-        std::cout<<std::endl;
-        command = 1;
+	if (size > 0 && rc == '<') {
+	  break;
+	}
+	else {
+	  --max_rep;
+#ifdef _WIN32
+	  Sleep(1000);
+#else
+	  sleep(1);
+#endif
+	}
     }
-    else
-        command = 1;
+
+    while (size > 0 && rc != '>' && ndx < 63) {
+        size = RS232_PollComport(CPORT_NR, &rc, 1);
+	receivedChars[ndx++] = rc;
+    }
+    receivedChars[ndx] = '\0';
     RS232_flushRX(CPORT_NR);
+
+
+    ndx = 0;
+    std::cout<< "BLACK TAPE (" << N_BLACK_TAPE_SENSOR << "): ";
+    for (int i = 0; i < N_BLACK_TAPE_SENSOR; ++i) {
+        black_type_sensor_reading[i] = receivedChars[ndx];
+        std::cout << black_type_sensor_reading[ndx] <<" ";
+        ++ndx;
+    }
+    std::cout << std::endl;
+    std::cout << "ULTRASONIC (" << N_ULTRASONIC << "): ";
+    for (int i = 0; i < N_ULTRASONIC; i++) {
+        ultrasonic_sensor_reading[i] = receivedChars[ndx]? 20: 99999;
+        std::cout << ultrasonic_sensor_reading[ndx] <<" ";
+        ++ndx;
+    }
+    std::cout << std::endl;
+
+    command = 1;
 }
